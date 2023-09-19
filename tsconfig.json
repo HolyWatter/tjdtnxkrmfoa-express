@@ -8,6 +8,6 @@
     "esModuleInterop": true,
     "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": ["src/**/*.ts", "src/index.ts"],
+  "include": ["src/**/*.ts", "src/server.ts"],
   "exclude": ["node_modules"]
 }
