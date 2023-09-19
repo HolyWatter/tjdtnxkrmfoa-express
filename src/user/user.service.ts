@@ -6,21 +6,21 @@ class UserService {
 
   constructor(db: Connection) {
     this.db = db;
-    console.log(db);
   }
 
   createUser = (req: Request, res: Response) => {
-    try {
-      this.db.execute(
-        "INSERT INTO user (name, nickname, email, password) VALUES (?, ?, ?, ?)",
-        ["name", "nickname", "email", "password"]
-      );
-      return res.json({
-        message: "success",
-      });
-    } catch {
-      throw new Error("failed");
-    }
+    console.log(req.body);
+    // try {
+    //   this.db.execute(
+    //     "INSERT INTO user (name, nickname, email, password) VALUES (?, ?, ?, ?)",
+    //     ["name", "nickname", "email", "password"]
+    //   );
+    //   return res.json({
+    //     message: "success",
+    //   });
+    // } catch {
+    //   throw new Error("failed");
+    // }
   };
 
   async returnOne(req: Request, res: Response) {

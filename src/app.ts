@@ -1,20 +1,19 @@
-import express from "express";
+import * as express from "express";
 import * as bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
+import * as cookieParser from "cookie-parser";
+import * as mysql from "mysql2";
 import Controller from "./interface/controller.interface";
-import mysql from "mysql2";
-import { Connection } from "mysql2/typings/mysql/lib/Connection";
 
 class App {
   public app: express.Application;
-  private db: Connection | undefined;
+  private db: mysql.Connection | undefined;
 
   private static instance: App;
 
   constructor(controllers: Controller[]) {
     this.app = express();
-    this.initializeControllers(controllers);
     this.initializeMiddlewares();
+    this.initializeControllers(controllers);
     this.connetToDB();
   }
 
@@ -35,7 +34,6 @@ class App {
 
   private connetToDB() {
     const { DB_HOST, DB_USER, DB_PW, DB_NAME } = process.env;
-
     this.db = mysql.createConnection({
       host: DB_HOST,
       port: 3306,
@@ -47,7 +45,7 @@ class App {
     });
   }
 
-  public getDB(): Connection {
+  public getDB(): mysql.Connection {
     if (!App.instance) {
       throw new Error("인스턴스 아직 생성되지 않음");
     }
