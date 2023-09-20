@@ -8,3 +8,5 @@ interface RequestWithUser extends Request {
     password: string;
   };
 }
+
+export default RequestWithUser;

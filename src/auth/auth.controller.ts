@@ -7,17 +7,19 @@ import UserCreateDto from "../user/dto.ts/user.create.dto";
 import validationMiddleware from "../../src/middleware/validation.middleware";
 import LogInDto from "./dto/login.dto";
 import WrongAuthenticationTokenException from "../../src/exceptions/WrongAuthenticationExecption";
+import { Connection } from "mysql2";
 
 class AuthController implements Controller {
   public path = "/auth";
   public router = Router();
   public authService: AuthService;
+  private db: Connection;
 
   constructor() {
     const appInstance = App.getInstance([]);
-    const db = appInstance.getDB();
+    this.db = appInstance.getDB();
 
-    this.authService = new AuthService(db);
+    this.authService = new AuthService(this.db);
     this.initializeRoutes();
   }
 
