@@ -22,9 +22,6 @@ class AuthController implements Controller {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, () => {
-      console.log(1);
-    });
     this.router.post(
       `${this.path}/register`,
       validationMiddleware(UserCreateDto),
@@ -35,7 +32,7 @@ class AuthController implements Controller {
       validationMiddleware(LogInDto),
       this.login
     );
-    this.router.post(`${this.path}/logout`);
+    this.router.post(`${this.path}/logout`, this.logout);
   }
 
   private registration = async (
@@ -58,21 +55,22 @@ class AuthController implements Controller {
   private login = async (req: Request, res: Response, next: NextFunction) => {
     const logInData: LogInDto = req.body;
     try {
-      const { accessToken, refreshToken } = await this.authService.login(
-        logInData
-      );
+      const { accessToken } = await this.authService.login(logInData);
 
-      // 여기부분 쿠키 만들고 보내는 부분 공부...!!
-      // res.setHeader('Set-Cookie', '')
+      res.setHeader("Set-Cookie", [
+        `Authorization=${accessToken}; HttpOnly; Secure; Max-Age=1D`,
+      ]);
+
       res.status(200).json();
     } catch {
       new WrongAuthenticationTokenException();
     }
   };
 
-  private createCookie(tokenData) {
-    return `Authorization=${tokenData}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
-  }
+  private logout = (req: Request, res: Response) => {
+    res.setHeader("Set-Cookie", "Authorization=;Max-age=0");
+    res.status(200).json();
+  };
 }
 
 export default AuthController;
