@@ -46,7 +46,7 @@ class AuthController implements Controller {
     const userData: UserCreateDto = req.body;
     try {
       const user = await this.authService.register(userData);
-      res.json({
+      res.status(200).json({
         message: "회원가입에 성공했습니다.",
         data: user,
       });
@@ -58,11 +58,21 @@ class AuthController implements Controller {
   private login = async (req: Request, res: Response, next: NextFunction) => {
     const logInData: LogInDto = req.body;
     try {
-      await this.authService.login(logInData);
+      const { accessToken, refreshToken } = await this.authService.login(
+        logInData
+      );
+
+      // 여기부분 쿠키 만들고 보내는 부분 공부...!!
+      // res.setHeader('Set-Cookie', '')
+      res.status(200).json();
     } catch {
       new WrongAuthenticationTokenException();
     }
   };
+
+  private createCookie(tokenData) {
+    return `Authorization=${tokenData}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
+  }
 }
 
 export default AuthController;

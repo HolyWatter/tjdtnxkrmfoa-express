@@ -5,6 +5,8 @@ import { Connection } from "mysql2/typings/mysql/lib/Connection";
 import { RowDataPacket } from "mysql2";
 import userQueries from "../../src/user/user.queries";
 import LogInDto from "./dto/login.dto";
+import * as jwt from "jsonwebtoken";
+import InvalidLoginException from "../exceptions/InvalidLoginException";
 
 class AuthService {
   private db: Connection;
@@ -42,7 +44,38 @@ class AuthService {
     } catch (err) {}
   };
 
-  public login = async (loginData: LogInDto) => {};
+  public login = async (loginData: LogInDto) => {
+    const { email, password } = loginData;
+
+    const [rows] = (await this.db
+      .promise()
+      .query(userQueries.getUserByEmail, [email])) as RowDataPacket[];
+
+    if (!rows.length) throw new InvalidLoginException();
+
+    const isValidPassword = await bcrypt.compare(password, rows[0].password);
+
+    if (!isValidPassword) throw new InvalidLoginException();
+
+    const payload = {
+      email: rows[0].email,
+      sub: rows[0].id,
+    };
+
+    return this.signJwt(payload);
+  };
+
+  public signJwt = async (payload) => {
+    const secret = process.env.JWT_SECRET;
+    const accessToken = jwt.sign(payload, secret, {
+      expiresIn: "3h",
+    });
+    const refreshToken = jwt.sign(payload, secret, {
+      expiresIn: "1d",
+    });
+
+    return { accessToken, refreshToken };
+  };
 }
 
 export default AuthService;
