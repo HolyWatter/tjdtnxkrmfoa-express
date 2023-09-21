@@ -4,6 +4,7 @@ import RequestWithUser from "../interface/requestWithUser.interface";
 import App from "../app";
 import userQueries from "../user/user.queries";
 import WrongAuthenticationTokenException from "../exceptions/WrongAuthenticationExecption";
+import DataInToken from "../interface/dataInToken.interface";
 
 const authMiddleware = async (
   req: RequestWithUser,
@@ -33,10 +34,10 @@ const authMiddleware = async (
         next(new WrongAuthenticationTokenException());
       }
     } catch {
-      new WrongAuthenticationTokenException();
+      next(new WrongAuthenticationTokenException());
     }
   } else {
-    new WrongAuthenticationTokenException();
+    next(new WrongAuthenticationTokenException());
   }
 };
 
