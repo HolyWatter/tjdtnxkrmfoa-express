@@ -6,7 +6,7 @@ import App from "../app";
 import authMiddleware from "../middleware/authMiddleware";
 import RequestWithUser from "../interface/requestWithUser.interface";
 import validationMiddleware from "../middleware/validation.middleware";
-import UpdateBlogDto from "./dto/updateBlog.dto";
+import { UpdateBlogDto } from "./dto/updateBlog.dto";
 
 class BlogController implements Controller {
   public path = "/blog";
@@ -26,7 +26,11 @@ class BlogController implements Controller {
       .all(`${this.path}/*`, authMiddleware)
       .get(`${this.path}/:uid`)
       .delete(`${this.path}/:id`)
-      .patch(`${this.path}/:uid`, validationMiddleware(UpdateBlogDto))
+      .patch(
+        `${this.path}/:uid`,
+        validationMiddleware(UpdateBlogDto),
+        this.updateBlogInfo
+      )
       .post(`${this.path}`, authMiddleware, this.createBlog);
   }
 
@@ -36,6 +40,16 @@ class BlogController implements Controller {
 
     res.status(200).json({
       message: "블로그가 생성되었습니다.",
+    });
+  };
+
+  private updateBlogInfo = async (req: RequestWithUser, res: Response) => {
+    const { uid } = req.params;
+    const blogInfo: UpdateBlogDto = req.body;
+    await this.blogService.updateBlogInfo({ ...blogInfo, blogId: uid });
+
+    res.status(200).json({
+      message: "정보가 수정되었습니다.",
     });
   };
 }

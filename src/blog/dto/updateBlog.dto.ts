@@ -1,6 +1,6 @@
 import { IsString } from "class-validator";
 
-class UpdateBlogDto {
+export class UpdateBlogDto {
   @IsString()
   blogName: string;
 
@@ -11,4 +11,6 @@ class UpdateBlogDto {
   thumbnailUrl: string;
 }
 
-export default UpdateBlogDto;
+export class UpdateBlogDtoWithId extends UpdateBlogDto {
+  blogId: string;
+}

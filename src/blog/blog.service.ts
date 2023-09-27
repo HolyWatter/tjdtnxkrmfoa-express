@@ -1,7 +1,7 @@
 import { Connection, RowDataPacket } from "mysql2";
 import blogQueries from "./blog.queries";
 import HttpException from "../exceptions/HttpException";
-import UpdateBlogDto from "./dto/updateBlog.dto";
+import { UpdateBlogDtoWithId } from "./dto/updateBlog.dto";
 
 class BlogService {
   private db: Connection;
@@ -32,7 +32,22 @@ class BlogService {
     blogName,
     description,
     thumbnailUrl,
-  }: UpdateBlogDto) {}
+    blogId,
+  }: UpdateBlogDtoWithId) {
+    try {
+      const result = await this.db
+        .promise()
+        .query(blogQueries.updateBlogInfo, [
+          blogName,
+          description,
+          thumbnailUrl,
+          blogId,
+        ]);
+    } catch (err) {
+      console.log(err);
+      throw new HttpException(500, "server Error");
+    }
+  }
 }
 
 export default BlogService;
