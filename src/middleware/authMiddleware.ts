@@ -11,17 +11,14 @@ const authMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const cookies = req.cookies;
+  const token = req.headers.authorization?.split("Bearer ")[1];
+
   const appInstance = App.getInstance([]);
   const db = appInstance.getDB();
-
-  if (cookies && cookies.Authorization) {
+  if (token) {
     const secret = process.env.JWT_SECRET;
     try {
-      const verificationResponse = jwt.verify(
-        cookies.Authorization,
-        secret
-      ) as DataInToken;
+      const verificationResponse = jwt.verify(token, secret) as DataInToken;
       const email = verificationResponse.email;
       const [row] = await db
         .promise()

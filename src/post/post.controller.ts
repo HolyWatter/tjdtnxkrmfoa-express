@@ -22,7 +22,10 @@ class PostController implements Controller {
   }
 
   private initalizeRoutes() {
-    this.router.get(`${this.path}/:uid`);
+    this.router.get(`${this.path}/search/:uid`, this.searchPost);
+    this.router.get(`${this.path}/detail/:pid`, this.getPostByPid);
+    this.router.get(`${this.path}/:uid`, this.getAllPost);
+    this.router.get(`${this.path}/:uid/:cid`, this.getCategoryPost);
     this.router
       .all(`${this.path}/*`, authMiddleware)
       .delete(
@@ -41,6 +44,42 @@ class PostController implements Controller {
     res.status(200).json({
       message: "게시글 작성에 성공했습니다.",
     });
+  };
+
+  searchPost = async (req: RequestWithUser, res: Response) => {
+    const { uid } = req.params;
+    const { keyword } = req.query;
+
+    console.log(uid, keyword);
+
+    const result = await this.postService.getSearchedPost(
+      uid,
+      keyword as string
+    );
+
+    res.status(200).json(result);
+  };
+
+  getPostByPid = async (req: RequestWithUser, res: Response) => {
+    const { pid } = req.params;
+
+    const result = await this.postService.getPostByPid(pid);
+
+    res.status(200).json(result);
+  };
+
+  getAllPost = async (req: RequestWithUser, res: Response) => {
+    const { uid } = req.params;
+    const result = await this.postService.getUserAllPost(uid);
+
+    res.status(200).json(result);
+  };
+
+  getCategoryPost = async (req: RequestWithUser, res: Response) => {
+    const { uid, cid } = req.params;
+    const result = await this.postService.getUserPostByCid(uid, cid);
+
+    res.status(200).json(result);
   };
 
   updatePost = async (req: RequestWithUser, res: Response) => {};

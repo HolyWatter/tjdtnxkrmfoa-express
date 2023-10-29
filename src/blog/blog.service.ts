@@ -2,6 +2,7 @@ import { Connection, RowDataPacket } from "mysql2";
 import blogQueries from "./blog.queries";
 import HttpException from "../exceptions/HttpException";
 import { UpdateBlogDtoWithId } from "./dto/updateBlog.dto";
+import userQueries from "../user/user.queries";
 
 class BlogService {
   private db: Connection;
@@ -9,7 +10,13 @@ class BlogService {
     this.db = db;
   }
 
-  async getBlogInfo(id: string) {}
+  async getBlogInfo(id: string) {
+    const [rows] = await this.db
+      .promise()
+      .query(blogQueries.findUserBlogInfo, [id]);
+
+    return rows[0];
+  }
 
   createBlog = async (uid: number) => {
     const [rows] = (await this.db
@@ -33,9 +40,10 @@ class BlogService {
     description,
     thumbnailUrl,
     blogId,
+    nickname,
   }: UpdateBlogDtoWithId) {
     try {
-      const result = await this.db
+      const result1 = await this.db
         .promise()
         .query(blogQueries.updateBlogInfo, [
           blogName,
@@ -43,6 +51,9 @@ class BlogService {
           thumbnailUrl,
           blogId,
         ]);
+      const result2 = await this.db
+        .promise()
+        .query(userQueries.updateUserNickname, [nickname, blogId]);
     } catch (err) {
       console.log(err);
       throw new HttpException(500, "server Error");

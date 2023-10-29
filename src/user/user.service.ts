@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Connection } from "mysql2";
+import userQueries from "./user.queries";
 
 class UserService {
   private db: Connection;
@@ -9,7 +10,6 @@ class UserService {
   }
 
   createUser = (req: Request, res: Response) => {
-    console.log(req.body);
     // try {
     //   this.db.execute(
     //     "INSERT INTO user (name, nickname, email, password) VALUES (?, ?, ?, ?)",
@@ -23,10 +23,12 @@ class UserService {
     // }
   };
 
-  async returnOne(req: Request, res: Response) {
-    return res.json({
-      data: 1,
-    });
+  async currentUser(uid?: number) {
+    const [rows] = await this.db
+      .promise()
+      .query(userQueries.getUserByUidWithoutPassword, [uid]);
+
+    return rows;
   }
 }
 

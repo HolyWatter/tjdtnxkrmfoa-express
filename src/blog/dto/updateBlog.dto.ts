@@ -9,6 +9,8 @@ export class UpdateBlogDto {
 
   @IsString()
   thumbnailUrl: string;
+
+  nickname: string;
 }
 
 export class UpdateBlogDtoWithId extends UpdateBlogDto {

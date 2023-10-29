@@ -2,12 +2,12 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as mysql from "mysql2";
+import * as cors from "cors";
 import Controller from "./interface/controller.interface";
 
 class App {
   public app: express.Application;
   private db: mysql.Connection | undefined;
-
   private static instance: App;
 
   constructor(controllers: Controller[]) {
@@ -24,6 +24,12 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(
+      cors({
+        origin: true,
+        credentials: true,
+      })
+    );
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
   }

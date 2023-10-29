@@ -57,21 +57,16 @@ class AuthController implements Controller {
   private login = async (req: Request, res: Response, next: NextFunction) => {
     const logInData: LogInDto = req.body;
     try {
-      const { accessToken } = await this.authService.login(logInData);
-
-      res.setHeader("Set-Cookie", [
-        `Authorization=${accessToken}; HttpOnly; Secure; Max-Age=1D`,
-      ]);
-
-      res.status(200).json();
+      const token = await this.authService.login(logInData);
+      res.status(200).json(token);
     } catch {
       new WrongAuthenticationTokenException();
     }
   };
 
   private logout = (req: Request, res: Response) => {
-    res.setHeader("Set-Cookie", "Authorization=;Max-age=0");
-    res.status(200).json();
+    // res.setHeader("Set-Cookie", "Authorization=;Max-age=0");
+    // res.status(200).json();
   };
 }
 

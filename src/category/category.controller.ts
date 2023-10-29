@@ -42,13 +42,9 @@ class CategoryController implements Controller {
   private getUserCategory = async (req: Request, res: Response) => {
     const userId = req.params.uid;
 
-    console.log(userId);
-
     const categories = await this.categoryService.getUserCategory(userId);
 
-    res.status(200).json({
-      categories,
-    });
+    res.status(200).json(categories);
   };
 
   private createCategory = async (
@@ -67,7 +63,9 @@ class CategoryController implements Controller {
   private deleteCategory = async (req: Request, res: Response) => {
     const categoryId = req.params.cid;
     await this.categoryService.deleteCategory(categoryId);
-    res.status(200).json();
+    res.status(200).json({
+      message: "카테고리가 삭제되었습니다.",
+    });
   };
 
   private updateCategory = async (req: Request, res: Response) => {

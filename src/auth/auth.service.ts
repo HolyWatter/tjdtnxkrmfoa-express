@@ -68,10 +68,13 @@ class AuthService {
   public signJwt = async (payload) => {
     const secret = process.env.JWT_SECRET;
     const accessToken = jwt.sign(payload, secret, {
-      expiresIn: "1d",
+      expiresIn: "3h",
+    });
+    const refreshToken = jwt.sign(payload, secret, {
+      expiresIn: "5d",
     });
 
-    return { accessToken };
+    return { accessToken, refreshToken };
   };
 }
 

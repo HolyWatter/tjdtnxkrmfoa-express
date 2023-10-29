@@ -23,8 +23,8 @@ class BlogController implements Controller {
 
   private initializeRoute() {
     this.router
+      .get(`${this.path}/:uid`, this.getUserBlog)
       .all(`${this.path}/*`, authMiddleware)
-      .get(`${this.path}/:uid`)
       .delete(`${this.path}/:id`)
       .patch(
         `${this.path}/:uid`,
@@ -33,6 +33,14 @@ class BlogController implements Controller {
       )
       .post(`${this.path}`, authMiddleware, this.createBlog);
   }
+
+  private getUserBlog = async (req: RequestWithUser, res: Response) => {
+    const { uid } = req.params;
+
+    const blogInfo = await this.blogService.getBlogInfo(uid);
+
+    return res.status(200).json(blogInfo);
+  };
 
   private createBlog = async (req: RequestWithUser, res: Response) => {
     const user = req.user;
