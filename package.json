@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
+    "build": "export NODE_OPTIONS=--max_old_space_size=4096 && tsc",
     "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/server.ts"
   },
   "keywords": [],

@@ -1,0 +1,1 @@
+{"version":3,"file":"TokenException.js","sourceRoot":"","sources":["../../../src/exceptions/TokenException.ts"],"names":[],"mappings":";;AAAA,mDAA4C;AAE5C,MAAM,cAAe,SAAQ,uBAAa;IACxC;QACE,KAAK,CAAC,GAAG,EAAE,8BAA8B,CAAC,CAAC;IAC7C,CAAC;CACF;AAED,kBAAe,cAAc,CAAC"}

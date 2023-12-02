@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsString } from "class-validator";
 
 export class CreatePostBodyDto {
   @IsString()
@@ -7,6 +7,10 @@ export class CreatePostBodyDto {
   content: string;
   @IsNumber()
   categoryId: number;
+  @IsBoolean()
+  isPinned: boolean;
+  @IsString()
+  thumbnailUrl: string;
 }
 
 export class CreatePostDto extends CreatePostBodyDto {

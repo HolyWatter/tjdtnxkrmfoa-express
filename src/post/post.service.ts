@@ -11,6 +11,20 @@ class PostService {
     this.db = db;
   }
 
+  async getHomeData(uid: string) {
+    const [pinnedPost] = await this.db
+      .promise()
+      .query(postQueries.pinnedPost, [uid]);
+    const [lastPost] = await this.db
+      .promise()
+      .query(postQueries.lastPost, [uid]);
+
+    return {
+      pinnedPost,
+      lastPost,
+    };
+  }
+
   async getSearchedPost(uid: string, keyword: string) {
     const [posts] = await this.db
       .promise()
@@ -82,7 +96,14 @@ class PostService {
     } catch {}
   }
 
-  async createPost({ title, content, categoryId, authorId }: CreatePostDto) {
+  async createPost({
+    title,
+    content,
+    categoryId,
+    authorId,
+    isPinned,
+    thumbnailUrl,
+  }: CreatePostDto) {
     try {
       await this.db
         .promise()
@@ -91,6 +112,8 @@ class PostService {
           content,
           categoryId,
           authorId,
+          isPinned,
+          thumbnailUrl,
         ]);
     } catch (err) {
       console.log(err);
@@ -103,6 +126,32 @@ class PostService {
       await this.db.promise().query(postQueries.deletePost, [pid]);
     } catch {
       throw new HttpException(500, "server Error!!");
+    }
+  }
+
+  async updatePost({
+    title,
+    content,
+    categoryId,
+    pid,
+    isPinned,
+    thumbnailUrl,
+  }) {
+    try {
+      const result = await this.db
+        .promise()
+        .query(postQueries.updatePostByPid, [
+          title,
+          content,
+          categoryId,
+          isPinned,
+          thumbnailUrl,
+          pid,
+        ]);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(500, error.toString());
     }
   }
 }

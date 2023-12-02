@@ -22,6 +22,7 @@ class PostController implements Controller {
   }
 
   private initalizeRoutes() {
+    this.router.get(`${this.path}/home/:uid`, this.getHomeData);
     this.router.get(`${this.path}/search/:uid`, this.searchPost);
     this.router.get(`${this.path}/detail/:pid`, this.getPostByPid);
     this.router.get(`${this.path}/:uid`, this.getAllPost);
@@ -37,10 +38,24 @@ class PostController implements Controller {
       .post(`${this.path}`, authMiddleware, this.createPost);
   }
 
+  getHomeData = async (req: RequestWithUser, res: Response) => {
+    const { uid } = req.params;
+    const data = await this.postService.getHomeData(uid);
+
+    return res.status(200).json(data);
+  };
+
   createPost = async (req: RequestWithUser, res: Response) => {
     const { id: authorId } = req.user;
-    const { title, content, categoryId } = req.body;
-    await this.postService.createPost({ title, content, categoryId, authorId });
+    const { title, content, categoryId, isPinned, thumbnailUrl } = req.body;
+    await this.postService.createPost({
+      title,
+      content,
+      categoryId,
+      authorId,
+      isPinned,
+      thumbnailUrl,
+    });
     res.status(200).json({
       message: "게시글 작성에 성공했습니다.",
     });
@@ -49,8 +64,6 @@ class PostController implements Controller {
   searchPost = async (req: RequestWithUser, res: Response) => {
     const { uid } = req.params;
     const { keyword } = req.query;
-
-    console.log(uid, keyword);
 
     const result = await this.postService.getSearchedPost(
       uid,
@@ -79,15 +92,30 @@ class PostController implements Controller {
     const { uid, cid } = req.params;
     const result = await this.postService.getUserPostByCid(uid, cid);
 
-    res.status(200).json(result);
+    return res.status(200).json(result);
   };
 
-  updatePost = async (req: RequestWithUser, res: Response) => {};
+  updatePost = async (req: RequestWithUser, res: Response) => {
+    const { pid } = req.params;
+    const { title, content, categoryId, isPinned, thumbnailUrl } = req.body;
+
+    await this.postService.updatePost({
+      title,
+      content,
+      categoryId,
+      pid,
+      isPinned,
+      thumbnailUrl,
+    });
+    return res.status(200).json({
+      message: "게시글이 수정되었습니다.",
+    });
+  };
 
   deletePost = async (req: RequestWithUser, res: Response) => {
     const { pid } = req.body;
     await this.postService.deletePost(pid);
-    res.status(200).json({
+    return res.status(200).json({
       message: "게시글이 삭제되었습니다.",
     });
   };
