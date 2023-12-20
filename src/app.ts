@@ -24,6 +24,8 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(express.json({ limit: "100mb" }));
+    this.app.use(express.urlencoded({ limit: "100mb", extended: false }));
     this.app.use(
       cors({
         origin: true,

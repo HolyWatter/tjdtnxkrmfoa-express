@@ -7,8 +7,10 @@ import PostController from "./post/post.controller";
 import BlogController from "./blog/blog.controller";
 import MediaController from "./media/media.controller";
 import { CommentsController } from "./comment/comment.controller";
+import AppController from "./app.controller";
 
 const app = new App([
+  new AppController(),
   new UserController(),
   new AuthController(),
   new CategoryController(),

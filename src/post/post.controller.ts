@@ -29,11 +29,7 @@ class PostController implements Controller {
     this.router.get(`${this.path}/:uid/:cid`, this.getCategoryPost);
     this.router
       .all(`${this.path}/*`, authMiddleware)
-      .delete(
-        `${this.path}/:pid`,
-        validationMiddleware(CreatePostBodyDto),
-        this.deletePost
-      )
+      .delete(`${this.path}/:pid`, this.deletePost)
       .patch(`${this.path}/:pid`, this.updatePost)
       .post(`${this.path}`, authMiddleware, this.createPost);
   }
@@ -113,7 +109,7 @@ class PostController implements Controller {
   };
 
   deletePost = async (req: RequestWithUser, res: Response) => {
-    const { pid } = req.body;
+    const { pid } = req.params;
     await this.postService.deletePost(pid);
     return res.status(200).json({
       message: "게시글이 삭제되었습니다.",
