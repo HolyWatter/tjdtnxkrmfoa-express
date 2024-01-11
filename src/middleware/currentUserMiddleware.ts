@@ -6,7 +6,7 @@ import userQueries from "../user/user.queries";
 import WrongAuthenticationTokenException from "../exceptions/WrongAuthenticationExecption";
 import DataInToken from "../interface/dataInToken.interface";
 
-const authMiddleware = async (
+const currentUserMiddleware = async (
   req: RequestWithUser,
   res: Response,
   next: NextFunction
@@ -28,16 +28,15 @@ const authMiddleware = async (
         req.user = row[0];
         next();
       } else {
-        console.log(1);
         next(new WrongAuthenticationTokenException());
       }
     } catch {
-      console.log(2);
       next(new WrongAuthenticationTokenException());
     }
   } else {
-    next(new WrongAuthenticationTokenException());
+    req.user = null;
+    next();
   }
 };
 
-export default authMiddleware;
+export default currentUserMiddleware;

@@ -4,6 +4,7 @@ import UserService from "./user.service";
 import App from "../app";
 import authMiddleware from "../middleware/authMiddleware";
 import RequestWithUser from "../interface/requestWithUser.interface";
+import currentUserMiddleware from "../middleware/currentUserMiddleware";
 
 class UserController implements Controller {
   public path = "/users";
@@ -18,15 +19,17 @@ class UserController implements Controller {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, authMiddleware, this.currentUser);
+    this.router.get(this.path, currentUserMiddleware, this.currentUser);
     this.router.post(this.path, this.userService.createUser);
   }
 
   private currentUser = async (req: RequestWithUser, res: Response) => {
+    if (req.user == null) return res.json(null);
+
     const uid = req.user.id;
     const user = await this.userService.currentUser(uid);
 
-    res.json(user);
+    return res.json(user);
   };
 }
 
