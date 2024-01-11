@@ -5,7 +5,7 @@
 - 배포 주소 : https://holywater.site
 - 배포방식 (프론트) : AWS S3 + CloudFront + github Actions (cicd)
 - 배포방식 (백) : Vulter Cloud + Docker 컨테이너 배포
-- 백엔드 레포지토리 : https://github.com/HolyWatter/tjdtnxkrmfoa-express
+- 프론트엔드 레포지토리 : https://github.com/HolyWatter/tjdtnxkrmfoa
 
 ### 아키텍쳐
 
