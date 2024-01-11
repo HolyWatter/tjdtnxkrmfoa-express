@@ -18,9 +18,18 @@ export class CommentsController implements Controller {
   }
 
   private initializeRoutes() {
+    this.router.get(`${this.path}/:pid`, this.getCommentsByPid);
     this.router.post(`${this.path}/:pid`, this.writeComment);
     this.router.delete(`${this.path}/:id`, this.deleteComment);
   }
+
+  getCommentsByPid = async (req: Request, res: Response) => {
+    const { pid } = req.params;
+
+    const comments = await this.commentService.getCommentsByPid(pid);
+
+    return res.status(200).json(comments);
+  };
 
   writeComment = async (req: Request, res: Response) => {
     const { username, password, comment } = req.body;

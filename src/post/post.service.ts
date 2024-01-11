@@ -86,8 +86,6 @@ class PostService {
         .promise()
         .query(categoryQueries.getCategoryInfoByCid, [uid, cid]);
 
-      console.log();
-
       return {
         category: category[0],
         ...count[0],
@@ -148,7 +146,6 @@ class PostService {
           thumbnailUrl,
           pid,
         ]);
-      console.log(result);
     } catch (error) {
       console.log(error);
       throw new HttpException(500, error.toString());

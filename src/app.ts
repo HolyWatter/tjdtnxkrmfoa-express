@@ -43,7 +43,6 @@ class App {
   private connetToDB() {
     const { DB_HOST, DB_USER, DB_PW, DB_NAME } = process.env;
 
-    console.log(DB_HOST, DB_USER);
     this.db = mysql.createConnection({
       host: DB_HOST,
       port: 3306,

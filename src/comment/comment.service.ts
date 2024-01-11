@@ -11,6 +11,16 @@ export class CommentService {
     this.db = db;
   }
 
+  async getCommentsByPid(pid: string) {
+    const [comments] = await this.db
+      .promise()
+      .query(commentQueries.getCommentsByPid, [pid]);
+
+    return {
+      comments,
+    };
+  }
+
   async writeComment(
     pid: string,
     username: string,
