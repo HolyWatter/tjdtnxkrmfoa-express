@@ -28,10 +28,10 @@ const currentUserMiddleware = async (
         req.user = row[0];
         next();
       } else {
-        next(new WrongAuthenticationTokenException());
+        req.user = null;
       }
     } catch {
-      next(new WrongAuthenticationTokenException());
+      req.user = null;
     }
   } else {
     req.user = null;
