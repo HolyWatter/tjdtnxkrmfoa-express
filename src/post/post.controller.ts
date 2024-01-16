@@ -7,17 +7,20 @@ import PostService from "./post.service";
 import RequestWithUser from "../interface/requestWithUser.interface";
 import validationMiddleware from "../middleware/validation.middleware";
 import { CreatePostBodyDto } from "./dto/createPost.dto";
+import { CommentService } from "../comment/comment.service";
 
 class PostController implements Controller {
   public path = "/post";
   public router = Router();
   private db: Connection;
   private postService: PostService;
+  private commentService: CommentService;
 
   constructor() {
     const appInstance = App.getInstance([]);
     this.db = appInstance.getDB();
     this.postService = new PostService(this.db);
+    this.commentService = new CommentService(this.db);
     this.initalizeRoutes();
   }
 
@@ -44,7 +47,7 @@ class PostController implements Controller {
   createPost = async (req: RequestWithUser, res: Response) => {
     const { id: authorId } = req.user;
     const { title, content, categoryId, isPinned, thumbnailUrl } = req.body;
-    await this.postService.createPost({
+    const id = await this.postService.createPost({
       title,
       content,
       categoryId,
@@ -55,6 +58,7 @@ class PostController implements Controller {
     res.status(200).json({
       message: "게시글 작성에 성공했습니다.",
     });
+    this.commentService.createGptComment(id);
   };
 
   searchPost = async (req: RequestWithUser, res: Response) => {

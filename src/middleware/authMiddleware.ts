@@ -28,11 +28,9 @@ const authMiddleware = async (
         req.user = row[0];
         next();
       } else {
-        console.log(1);
         next(new WrongAuthenticationTokenException());
       }
     } catch {
-      console.log(2);
       next(new WrongAuthenticationTokenException());
     }
   } else {

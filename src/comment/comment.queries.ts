@@ -8,6 +8,8 @@ const commentQueries = {
   getOneCommentWithPassword: "SELECT * FROM comments WHERE id = ?",
 
   deleteComment: "DELETE FROM comments WHERE id = ?",
+
+  getPostContent: "SELECT content FROM post WHERE id = ?",
 };
 
 export default commentQueries;

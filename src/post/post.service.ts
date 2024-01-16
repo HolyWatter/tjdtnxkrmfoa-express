@@ -1,4 +1,4 @@
-import { Connection } from "mysql2";
+import { Connection, RowDataPacket } from "mysql2";
 import { CreatePostDto } from "./dto/createPost.dto";
 import HttpException from "../exceptions/HttpException";
 import postQueries from "./post.queries";
@@ -103,7 +103,7 @@ class PostService {
     thumbnailUrl,
   }: CreatePostDto) {
     try {
-      await this.db
+      const [result] = (await this.db
         .promise()
         .execute(postQueries.createPost, [
           title,
@@ -112,7 +112,9 @@ class PostService {
           authorId,
           isPinned,
           thumbnailUrl,
-        ]);
+        ])) as RowDataPacket[];
+
+      return result.insertId;
     } catch (err) {
       console.log(err);
       throw new HttpException(500, "server Error!!");
