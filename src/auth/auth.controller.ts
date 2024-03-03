@@ -34,7 +34,7 @@ class AuthController implements Controller {
       validationMiddleware(LogInDto),
       this.login
     );
-    this.router.post(`${this.path}/logout`, this.logout);
+    this.router.post(`${this.path}/token`, this.token);
   }
 
   private registration = async (
@@ -57,16 +57,31 @@ class AuthController implements Controller {
   private login = async (req: Request, res: Response, next: NextFunction) => {
     const logInData: LogInDto = req.body;
     try {
-      const token = await this.authService.login(logInData);
-      res.status(200).json(token);
+      const { refreshToken, accessToken } = await this.authService.login(
+        logInData
+      );
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: true,
+        secure: true,
+      });
+
+      res.status(200).json({ accessToken });
     } catch {
       new WrongAuthenticationTokenException();
     }
   };
 
-  private logout = (req: Request, res: Response) => {
-    // res.setHeader("Set-Cookie", "Authorization=;Max-age=0");
-    // res.status(200).json();
+  private token = async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+
+    if (refreshToken) {
+      const { accessToken } = await this.authService.refreshToken(refreshToken);
+      return res.json({ accessToken });
+    } else {
+      new WrongAuthenticationTokenException();
+    }
   };
 }
 

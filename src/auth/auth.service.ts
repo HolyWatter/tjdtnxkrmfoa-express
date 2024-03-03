@@ -7,6 +7,7 @@ import userQueries from "../../src/user/user.queries";
 import LogInDto from "./dto/login.dto";
 import * as jwt from "jsonwebtoken";
 import InvalidLoginException from "../exceptions/InvalidLoginException";
+import WrongAuthenticationTokenException from "../exceptions/WrongAuthenticationExecption";
 
 class AuthService {
   private db: Connection;
@@ -65,10 +66,21 @@ class AuthService {
     return this.signJwt(payload);
   };
 
+  public refreshToken = (refreshToken: string) => {
+    const isValid = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    if (isValid) {
+      const { email, sub } = isValid as jwt.JwtPayload;
+      return this.signJwt({ email, sub });
+    } else {
+      new WrongAuthenticationTokenException();
+    }
+  };
+
   public signJwt = async (payload) => {
     const secret = process.env.JWT_SECRET;
     const accessToken = jwt.sign(payload, secret, {
-      expiresIn: "3h",
+      expiresIn: "1m",
     });
     const refreshToken = jwt.sign(payload, secret, {
       expiresIn: "5d",

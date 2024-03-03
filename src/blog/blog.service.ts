@@ -55,7 +55,6 @@ class BlogService {
         .promise()
         .query(userQueries.updateUserNickname, [nickname, blogId]);
     } catch (err) {
-      console.log(err);
       throw new HttpException(500, "server Error");
     }
   }

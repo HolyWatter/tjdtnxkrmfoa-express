@@ -67,7 +67,6 @@ class PostService {
         posts: rows,
       };
     } catch (e) {
-      console.log(e);
       throw new HttpException(500, "server Error!!");
     }
   }
@@ -116,7 +115,6 @@ class PostService {
 
       return result.insertId;
     } catch (err) {
-      console.log(err);
       throw new HttpException(500, "server Error!!");
     }
   }
@@ -149,7 +147,6 @@ class PostService {
           pid,
         ]);
     } catch (error) {
-      console.log(error);
       throw new HttpException(500, error.toString());
     }
   }

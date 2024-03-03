@@ -17,7 +17,6 @@ class CategoryService {
 
       return rows;
     } catch (e) {
-      console.log(e);
       throw new HttpException(500, "server Error");
     }
   }
@@ -35,7 +34,6 @@ class CategoryService {
     try {
       await this.db.promise().query(categoryQueries.deleteCategory, [cid]);
     } catch (e) {
-      console.log(e);
       throw new HttpException(500, "server Error");
     }
   }
