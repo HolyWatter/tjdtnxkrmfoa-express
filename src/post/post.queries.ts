@@ -1,8 +1,8 @@
 const postQueries = {
   pinnedPost:
-    "SELECT post.id, title, content, createdAt, nickname, isPinned, thumbnailUrl FROM post LEFT JOIN user ON post.authorID = user.id WHERE post.authorId = ? AND post.isPinned = true ORDER BY createdAt DESC LIMIT 5",
+    "SELECT post.id, title, content, createdAt, nickname, isPinned, thumbnailUrl FROM post LEFT JOIN user ON post.authorID = user.id WHERE post.authorId = ? AND post.isPinned = true ORDER BY createdAt DESC LIMIT 6",
   lastPost:
-    "SELECT post.id, title, content, createdAt, nickname, isPinned, thumbnailUrl FROM post LEFT JOIN user ON post.authorID = user.id WHERE post.authorId = ? ORDER BY createdAt DESC LIMIT 5",
+    "SELECT post.id, title, content, createdAt, nickname, isPinned, thumbnailUrl FROM post LEFT JOIN user ON post.authorID = user.id WHERE post.authorId = ? ORDER BY createdAt DESC LIMIT 6",
   searchPost:
     "SELECT post.id, title, content, createdAt, nickname, isPinned, thumbnailUrl FROM post LEFT JOIN user ON post.authorId = user.id WHERE (title LIKE ? OR content LIKE ?) AND post.authorId = ? ORDER BY createdAt DESC",
   countSearchPost:
